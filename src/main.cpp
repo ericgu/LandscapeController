@@ -2,11 +2,13 @@
 
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include "WifiManager.h"
 
 #include "manager.h"
 #include "action.h"
 #include "device.h"
-#include "wifi.h"
+#include "WebServer.h"
+//#include "wifi.h"
 #include "HardWiredController.h"
 
 #ifdef ESP8266
@@ -16,9 +18,9 @@
 #endif
 
 ADC_MODE(ADC_TOUT);
- 
+
 Manager manager;
-WiFiManager wiFiManager(&manager);
+WebServer webServer(&manager);
 HardWiredController hardWiredController(&manager);
 
 static const int STAIR_SENSE_PIN = 16;
@@ -31,7 +33,11 @@ void setup()
  
   pinMode(STAIR_SENSE_PIN, INPUT);
 
-  wiFiManager.Init();
+  WiFiManager wifiManager;
+  wifiManager.resetSettings();
+  wifiManager.autoConnect("LandscapeController");
+
+  webServer.Init();
 }
 
 void SetHouseLights(char* actionString)
@@ -64,7 +70,7 @@ void HandleStairSense()
 
 void loop() 
 {
-  wiFiManager.Handle();
+  webServer.Handle();
 
   HandleStairSense();
 
