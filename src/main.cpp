@@ -10,6 +10,7 @@
 #include "WebServer.h"
 //#include "wifi.h"
 #include "HardWiredController.h"
+#include "StairSensing.h"
 
 #ifdef ESP8266
     extern "C" {
@@ -22,59 +23,28 @@ ADC_MODE(ADC_TOUT);
 Manager manager;
 WebServer webServer(&manager);
 HardWiredController hardWiredController(&manager);
-
-static const int STAIR_SENSE_PIN = 16;
-bool stairLightsOn = false;
- 
+StairSensing stairSensing(&manager);
 
 void setup()
 {
   Serial.begin(115200);
  
-  pinMode(STAIR_SENSE_PIN, INPUT);
-
   WiFiManager wifiManager;
-  wifiManager.resetSettings();
+  //wifiManager.resetSettings();
   wifiManager.autoConnect("LandscapeController");
 
   webServer.Init();
-}
-
-void SetHouseLights(char* actionString)
-{
-    Serial.print("House lights: "); Serial.println(actionString);
-
-    String a = String(actionString);
-    Action action(a);
-    String resource("house");
-    manager.DoCommand(action, resource); 
-}
-
-void HandleStairSense()
-{
-  // Sense 12V input and send appropriate command if it has changed.
-  
-  bool stairSense = digitalRead(STAIR_SENSE_PIN);
-
-  if (stairSense && !stairLightsOn)
-  {
-    SetHouseLights("on");
-    stairLightsOn = true;
-  }
-  else if (!stairSense && stairLightsOn)
-  {
-    SetHouseLights("off");
-    stairLightsOn = false;
-  }
 }
 
 void loop() 
 {
   webServer.Handle();
 
-  HandleStairSense();
+  stairSensing.Handle();
 
   hardWiredController.Handle();
+
+  manager.HandleTimeout();
 
   // handle timeouts to switch off if accidently left on.
   // flash outputs 5 minutes before turning off...

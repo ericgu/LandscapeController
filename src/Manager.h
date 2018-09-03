@@ -13,6 +13,7 @@
 class Manager
 {
     private:
+        const static int TimeOut = 1000;        // in 10 millisecond units
         const static int DeviceCount = 5;
 
         Device* _devices[DeviceCount];
@@ -21,10 +22,10 @@ class Manager
 
         Manager()
         {
-            _devices[0] = new Device(GPIO4_D2_PUMP, "pump", "fountain");
-            _devices[1] = new Device(GPI12_D6_BED, "bed", "lights");
-            _devices[2] = new Device(GPI13_D7_HOUSE, "house", "lights");
-            _devices[3] = new Device(GPI14_D5_UMBRELLA, "umbrella", "lights");
+            _devices[0] = new Device(GPIO4_D2_PUMP, "pump", "fountain", TimeOut);
+            _devices[1] = new Device(GPI12_D6_BED, "bed", "lights", TimeOut);
+            _devices[2] = new Device(GPI13_D7_HOUSE, "house", "lights", TimeOut);
+            _devices[3] = new Device(GPI14_D5_UMBRELLA, "umbrella", "lights", TimeOut);
             _devices[4] = new OnIfAnyDevice(GPIO5_D1_12VPOWER, "12VPower", _devices[1], _devices[2], _devices[3]);
 
             for (int i = 0; i < DeviceCount; i++)
@@ -54,6 +55,13 @@ class Manager
             }
 
             return status;
+        }
 
+        void HandleTimeout()
+        {
+            for (int i = 0; i < DeviceCount; i++)
+            {
+                _devices[i]->HandleTimeout();
+            }
         }
 };

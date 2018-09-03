@@ -8,6 +8,8 @@ class Device
         String _group;
         bool _state;
         int _outputPin;
+        int _timeout;
+        int _timeoutRemaining;
 
     protected:
         String _name;
@@ -18,12 +20,26 @@ class Device
             _state = false;
         }
 
-        Device(int outputPin, String name, String group)
+        Device(int outputPin, String name, String group, int timeout)
         : Device()
         {
             _outputPin = outputPin;
             _name = name;
             _group = group;
+            _timeout = timeout;
+        }
+
+        void SetState(bool newState)
+        {
+            if (newState)
+            {
+                _timeoutRemaining = _timeout;
+            }
+            else
+            {
+                _timeoutRemaining = 0;
+            }
+            _state = newState;
         }
 
         void DoAction(Action& action, String& name)
@@ -40,15 +56,15 @@ class Device
             switch (action.GetValue())
             {
                 case Action::Off:
-                    _state = false;
+                    SetState(false);
                     break;
 
                 case Action::On:
-                    _state = true;
+                    SetState(true);
                     break;
 
                 case Action::Toggle:
-                    _state = !_state;
+                    SetState(!_state);
                     break;
             }
             //Serial.println(_state);
@@ -67,5 +83,21 @@ class Device
         int GetOutputPin()
         {
             return _outputPin;
+        }
+
+        void HandleTimeout()
+        {
+            if (_timeoutRemaining > 0)
+            {
+                _timeoutRemaining--;
+            }
+            else
+            {
+                if (_state)
+                {
+                    Serial.println("Timed out...");
+                    SetState(false);
+                }
+            }
         }
 };

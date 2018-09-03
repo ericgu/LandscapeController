@@ -16,7 +16,7 @@ class OnIfAnyDevice: public Device
         }
 
         OnIfAnyDevice(int outputPin, String name, Device* pFirst, Device* pSecond, Device* pThird)
-        : Device(outputPin, name, "")
+        : Device(outputPin, name, "", 0)
         {
             _pFirst = pFirst;
             _pSecond = pSecond;
