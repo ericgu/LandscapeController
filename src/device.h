@@ -10,6 +10,9 @@ class Device
         int _outputPin;
         int _timeout;
         int _timeoutRemaining;
+        int _pwmLevel;
+
+         int PwmValues[5] = {205, 410, 614, 819, 1023};
 
     protected:
         String _name;
@@ -18,6 +21,7 @@ class Device
         Device() 
         {
             _state = false;
+            _pwmLevel = 1023;
         }
 
         Device(int outputPin, String name, String group, int timeout)
@@ -66,8 +70,34 @@ class Device
                 case Action::Toggle:
                     SetState(!_state);
                     break;
+
+                case Action::Dim20:
+                case Action::Dim40:
+                case Action::Dim60:
+                case Action::Dim80:
+                case Action::Dim100:
+                    _pwmLevel = PwmValues[action.GetValue() - Action::Dim20];
+                    Serial.print("Pwm at: "); Serial.println(_pwmLevel);
+                    break;
+
             }
             //Serial.println(_state);
+        }
+
+        void UpdateState()
+        {
+            int state = GetState();
+            Serial.println(state);
+            Serial.println(_pwmLevel);
+
+            if (state)
+            {
+                analogWrite(_outputPin, _pwmLevel);
+            }
+            else
+            {
+                analogWrite(_outputPin, 0);
+            }
         }
 
         virtual bool GetState()
@@ -75,14 +105,9 @@ class Device
             return _state;
         }
 
-        String GetName()
+        void SetAsOutputPin()
         {
-            return _name;
-        }
-
-        int GetOutputPin()
-        {
-            return _outputPin;
+            pinMode(_outputPin, OUTPUT);
         }
 
         void HandleTimeout()
@@ -99,5 +124,10 @@ class Device
                     SetState(false);
                 }
             }
+        }
+
+        String GetStateString()
+        {
+            return _name + ": " + GetState() + " => " + _pwmLevel;
         }
 };

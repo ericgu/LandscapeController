@@ -7,6 +7,7 @@ const char* MainPageHtml1 = R"-----(
     <title>Landscape Controller Main</title>
 </head>
 <body>
+    <font size="+3">
     <h1>Landscape Controller</h1>
 
     <h1>Status</h1>
@@ -39,59 +40,12 @@ const char* MainPageHtml2 = R"-----(
 <p><b>Umbrella lights</b><br/>
 <a href="/command?r=umbrella&a=on">On</a><br/>
 <a href="/command?r=umbrella&a=off">Off</a><br/>
-<a href="/command?r=umbrella&a=toggle">Toggle</a>
+<a href="/command?r=umbrella&a=toggle">Toggle</a><br/>
+<a href="/command?r=umbrella&a=dim20">20%</a>&nbsp;&nbsp;
+<a href="/command?r=umbrella&a=dim40">40%</a>&nbsp;&nbsp;
+<a href="/command?r=umbrella&a=dim60">60%</a>&nbsp;&nbsp;
+<a href="/command?r=umbrella&a=dim80">80%</a>&nbsp;&nbsp;
+<a href="/command?r=umbrella&a=dim100">100%</a>
 </p>
 
-<h1>Setup</h1>
-
-<h3><a href="/Provision">Controller Setup</a></h3>
-
-
 )-----";
-
-// PROVISIONING PAGE
-
-const char* ProvisionPageHtml1 = R"-----(
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta charset="utf-8" />
-    <title>EagleDecorations Setup</title>
-</head>
-<body>
-    <h1>EagleDecorations Controller Setup</h1>
-
-        <h3><a href="/">Main Page</a></h3>
-
-
-)-----";
-
-const char* ProvisionPageHtml2 = R"-----(
-
-    <h1>Wireless Provisioning</h1>
-<p>
-    Chose a network from the list or enter one directly.
-</p>
-<h2>Visible Networks</h2>
-<form>
-    <select name="ssid">
-)-----";
-
-const char* ProvisionPageHtml3 = R"-----(
-    </select>
-    &nbsp;&nbsp; Password: <input type="text" name="password"/>
-    <input type="submit" value="Register"/>
-</form>
-<h3>Other Network</h3>
-<form>
-    SSID: <input type="text" name="ssid" />
-    &nbsp;&nbsp; Password: <input type="text" name="password"/>
-    <input type="submit" value="Register"/>
-</form>
-
-</body>
-</html>
-)-----";
-
-

@@ -11,7 +11,7 @@ class OnIfAnyDevice: public Device
         Device* _pThird;
 
     public:
-        OnIfAnyDevice() 
+        OnIfAnyDevice() : Device()
         {
         }
 

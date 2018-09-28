@@ -46,8 +46,5 @@ void loop()
 
   manager.HandleTimeout();
 
-  // handle timeouts to switch off if accidently left on.
-  // flash outputs 5 minutes before turning off...
-
-  delay(10);  // run at 100Hz or so...
+  delay(10);  // run at 100Hz (ish)
 }
