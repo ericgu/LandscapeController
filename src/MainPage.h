@@ -48,4 +48,10 @@ const char* MainPageHtml2 = R"-----(
 <a href="/command?r=umbrella&a=dim100">100%</a>
 </p>
 
+<p><b>All lights</b><br/>
+<a href="/command?r=lights&a=on">On</a><br/>
+<a href="/command?r=lights&a=off">Off</a><br/>
+<a href="/command?r=lights&a=toggle">Toggle</a>
+</p>
+
 )-----";

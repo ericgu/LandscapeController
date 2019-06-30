@@ -2,8 +2,10 @@
 
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
-#include "WifiManager.h"
+#include <WiFiClient.h>
+//#include "WifiManager.h"
 
+#include "UdpLogger.h"
 #include "manager.h"
 #include "action.h"
 #include "device.h"
@@ -20,8 +22,9 @@
 
 ADC_MODE(ADC_TOUT);
 
+//UdpLogger udpLogger("LandscapeController: ", 12345);
 Manager manager;
-WebServer webServer(&manager);
+WebServer webServer(&manager/*, &udpLogger*/);
 HardWiredController hardWiredController(&manager);
 StairSensing stairSensing(&manager);
 
@@ -29,15 +32,41 @@ void setup()
 {
   Serial.begin(115200);
  
-  WiFiManager wifiManager;
+  char ssid[] = "DozerNet";
+  char password[] = "Gunnerson";
+
+  IPAddress ip(192, 168, 1, 200);
+
+  //WiFiManager wifiManager;
   //wifiManager.resetSettings();
-  wifiManager.autoConnect("LandscapeController");
+  //wifiManager.autoConnect("LandscapeController");
+  
+  WiFi.begin(ssid, password);
+  WiFi.mode(WIFI_STA);
+
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(500);
+    Serial.print(".");
+  }
 
   webServer.Init();
+  UdpLogger.Init(12345, "LandscapeController: ");
+  UdpLogger.WriteStartMessage();
 }
 
+int heartbeat = 0;
 void loop() 
 {
+  heartbeat++;
+  if (heartbeat > 100 * 60) // one message per minute
+  {
+    //sendUdp();
+    heartbeat = 0;
+    UdpLogger.print("LandscapeController ");
+    UdpLogger.println(WiFi.localIP());
+  }
+
   webServer.Handle();
 
   stairSensing.Handle();

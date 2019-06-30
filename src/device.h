@@ -35,6 +35,9 @@ class Device
 
         void SetState(bool newState)
         {
+            UdpLogger.print(_name);
+            UdpLogger.print(" new state: ");
+            UdpLogger.println(newState);
             if (newState)
             {
                 _timeoutRemaining = _timeout;
