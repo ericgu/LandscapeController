@@ -36,11 +36,14 @@ void setup()
   char password[] = "Gunnerson";
 
   IPAddress ip(192, 168, 1, 200);
+  IPAddress gateway(192, 168, 1, 5);
+  IPAddress subnet(255, 255, 255, 0);
 
   //WiFiManager wifiManager;
   //wifiManager.resetSettings();
   //wifiManager.autoConnect("LandscapeController");
   
+  WiFi.config(ip, gateway, subnet);
   WiFi.begin(ssid, password);
   WiFi.mode(WIFI_STA);
 
@@ -65,6 +68,7 @@ void loop()
     heartbeat = 0;
     UdpLogger.print("LandscapeController ");
     UdpLogger.println(WiFi.localIP());
+    Serial.println("Heartbeat...");
   }
 
   webServer.Handle();
